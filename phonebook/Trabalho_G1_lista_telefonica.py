@@ -1,8 +1,9 @@
 import csv
 lista_contatos=[]
-
+lista_dominios_email= (".com",".org",".br",".net")
 def cadastrar_contato():
 
+   # Validação do nome
    while True:
       nome= input("Insira o seu Nome: ") 
       if len(nome) < 3:
@@ -11,7 +12,8 @@ def cadastrar_contato():
       else:
          print("Nome cadastrado")
          break 
-      
+
+   # Validação do numero   
    while True:
       numero= input("Insira o seu numero: ")
        
@@ -22,10 +24,11 @@ def cadastrar_contato():
          print("Telefone Cadastrado")
          break
 
+   # Validação do email  
    while True:
       email= input("Insira o seu email: ")
 
-      if "@" not in email or not email.endswith(".com"):
+      if "@" not in email or not email.endswith(lista_dominios_email):
 
          print("Email inválido, digite novamente: ") 
          continue
@@ -33,14 +36,18 @@ def cadastrar_contato():
          print("Email Cadastrado")
          break
    
-   pessoa = {"nome": nome, "numero": numero, "email": email}
-   lista_contatos.append(pessoa)
-   print("Contato cadastrado com sucesso!")
+   # Cria uma instância do dicionário para cada contato e adiciona o contato na lista de contatos
+   contato = {"nome": nome, "numero": numero, "email": email}
+   lista_contatos.append(contato)
+   print("Contato cadastrado com êxito")
 
 def exibir_contatos():
+
+   # Se não houver contatos registrados
    if not lista_contatos:
       print("Nenhum contato registrado")
-
+   
+   # Printa todos os contatos existentes
    else:
       for contato in lista_contatos:
          print(f"NOME: {contato['nome']}")
@@ -50,6 +57,7 @@ def exibir_contatos():
 
 def buscar_contato(nome):
     encontrados = []
+
     # Procura o nome na lista de contatos
     for contato in lista_contatos:
         
@@ -59,7 +67,6 @@ def buscar_contato(nome):
             encontrados.append(contato)
 
     # Printa os contatos encontrados se houver correspondência 
-       
     if encontrados:
         print(f"{len(encontrados)} contato(s) encontrado(s):")
         for contato in encontrados:
@@ -72,9 +79,13 @@ def buscar_contato(nome):
 
 def salvar_contatos():
     nome_arquivo = "agenda.csv"
-    
+
+    # Abre o arquivo para escrever os contatos nas linhas do arquivo csv
+    # Campo de enconding garante que os nomes com acentos serão escritos corretamente
+
     with open(nome_arquivo, mode='w', newline='', encoding='utf-8') as arquivo_csv:
-   
+
+      # Nome das colunas
         campos = ["nome", "numero", "email"]
         
         escreve = csv.DictWriter(arquivo_csv, fieldnames=campos)
@@ -83,11 +94,13 @@ def salvar_contatos():
         
         escreve.writerows(lista_contatos)
     
-    print(f"Contatos salvos no arquivo '{nome_arquivo}' com sucesso!")
+    print(f"Contatos salvos no arquivo '{nome_arquivo}' com êxito")
 
 def carregar_contatos():
    nome_arquivo = "agenda.csv"
-   
+
+   # Abre o arquivo para ler as linhas do arquivo csv
+   # Campo de enconding garante que os nomes com acentos serão lidos corretamente
    with open(nome_arquivo, mode='r', encoding='utf-8') as arquivo_csv:
          leitor = csv.DictReader(arquivo_csv)
             
@@ -104,14 +117,16 @@ def carregar_contatos():
                 }
                lista_contatos.append(contato)
             
-   print("Contatos carregados com sucesso! \n")
+   print("Contatos carregados com êxito \n")
    
 
 def menu_principal():
    while True:
-      
-      print("\nMenu\n1 - Cadastro\n2 - Exibir contatos\n3 - Buscar Contato\n4 - Salvar contatos\n5 - Carregar Contatos\n6 - Sair \n")
+      print("-" * 20)
+      print("\nMenu\n1 - Cadastrar novo Contato\n2 - Exibir contatos\n3 - Salvar contatos\n4 - Buscar contato\n5 - Sair\n")
+      print("-" * 20)
       carregar_contatos()
+      
       try:
          opcao= int(input("Digite a opção: "))
       except ValueError:
@@ -129,28 +144,21 @@ def menu_principal():
             continue
 
          case 3:
+            salvar_contatos()
+            continue
+
+         case 4:
             nome= input("Digite o nome à ser procurado: ")
             buscar_contato(nome)
             continue
 
-         case 4:
-            salvar_contatos()
-            continue
-
-         case 6:
+         case 5:
             salvar_contatos()
             break
-         case _:
-          print("Unknown Class")
-            # nome= input("Digite o nome a ser procurado:")
-            # if len(nome) < 3:
-            #    print("Insira o nome novamente")
-            # else:
-            #    buscar_contato(nome)
-            # continue
-         
-         # case 4:
-         #    salvar_contatos()
 
+         case _:
+          print("Opção inválida")
+          continue
+            
 
 menu_principal()
